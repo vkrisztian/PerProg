@@ -54,6 +54,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Babuk\Babu.cs" />
+    <Compile Include="Babuk\Bastya.cs" />
+    <Compile Include="Babuk\Futo.cs" />
+    <Compile Include="Babuk\Gyalog.cs" />
+    <Compile Include="Babuk\Kiraly.cs" />
+    <Compile Include="Babuk\Kiralyno.cs" />
+    <Compile Include="Babuk\Lo.cs" />
+    <Compile Include="Tabla.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -62,6 +72,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Jatekos.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
