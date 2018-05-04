@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace PerProg
 {
-    class Tabla
+    public class Tabla : Bindable
     {
-        int[,] Table { get; set; }
+        int[,] table;
+        public int[,] Table
+        {
+            get { return table; }
+            set { value = table; OPC("table");  }
+        }
         public Tabla()
         {
-            Table = new int[8, 8];
+            this.table = new int[8, 8];
         }
     }
 }

@@ -6,16 +6,23 @@ using System.Threading.Tasks;
 
 namespace PerProg
 {
-    public class ViewModel
+    public class ViewModel : Bindable
     {
+        public const int csempeMeret = 20;
         Tabla tabla;
+        public Tabla Tabla
+        {
+            get { return tabla; }
+            set { value = tabla; }
+        }
         Jatekos feher;
         Jatekos fekete;
         public ViewModel()
         {
-            tabla = new Tabla();
+           
             feher = new Jatekos("TODO", Szin.feher);
             fekete = new Jatekos("AI", Szin.fekete);
+            tabla = new Tabla();
         }
     }
 }

@@ -10,10 +10,10 @@ namespace PerProg
 {
     public static class Util
     {
-        public static List<Babu> InitBabuk(Szin szin)
+        public static BindingList<Babu> InitBabuk(Szin szin)
         {
             int sor = szin == Szin.feher ? 7 : 0;
-            List<Babu> babuk = new List<Babu>()
+            BindingList<Babu> babuk = new BindingList<Babu>()
             {
                 new Bastya(sor,0,szin),
                 new Bastya(sor,7,szin),

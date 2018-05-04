@@ -20,9 +20,12 @@ namespace PerProg
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ViewModel VM { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+            VM = new ViewModel();
+            this.DataContext = VM;
         }
     }
 }

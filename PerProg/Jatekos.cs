@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace PerProg
     class Jatekos
     {
         string Name { get; set; }
-        List<Babu> Babuk { get; set; }
+        BindingList<Babu> Babuk { get; set; }
         Szin Szin { get; set; }
         public Jatekos(string name,Szin szin)
         {
