@@ -34,7 +34,7 @@ namespace PerProg
                     palya[this.Xpozicio, this.Ypozicio] = 0;
                     palya[x, y] = (int)this.tipus * (int)this.Szin;
                     this.Xpozicio = x;
-                    this.Xpozicio = y;
+                    this.Ypozicio = y;
                  
                     return true;
                 }
@@ -48,8 +48,10 @@ namespace PerProg
             {
                 if (this.Xpozicio-1 == x && this.Ypozicio == y && palya[x, y] == 0 && x >= 0 && y >= 0)
                 {
+                    palya[this.Xpozicio, this.Ypozicio] = 0;
+                    palya[x, y] = (int)this.tipus * (int)this.Szin;
                     this.Xpozicio = x;
-                    this.Xpozicio = y;
+                    this.Ypozicio = y;
                     return true;
                 }   
                 else if (palya[this.Xpozicio - 1, this.Ypozicio - 1] != 0 && palya[this.Xpozicio - 1, this.Ypozicio + 1] != 0 && Math.Abs(this.Xpozicio - x) == 1 && Math.Abs(this.Ypozicio - y) == 1 && y <= 7 && y >= 0 && x >= 0)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PerProg
 {
@@ -24,16 +25,32 @@ namespace PerProg
             fekete = new Jatekos("AI", Szin.fekete);
             table = new Tabla();
         }
-        public void Proba()
+        public bool Lepes(Point from, Point to,bool aktualisjatekos)
         {
-            foreach (var item in fekete.Babuk)
+            bool lepett = false;
+            if (aktualisjatekos)
             {
-                if (item.Xpozicio == 1 && item.Ypozicio == 1)
+                foreach (var item in feher.Babuk)
                 {
-                    item.Lep(this.Table.Table, 2, 1);
+                    if (item.Xpozicio == from.X && item.Ypozicio == from.Y)
+                    {
+                        lepett = item.Lep(this.Table.Table, (int)to.X, (int)to.Y);
+                    }
                 }
             }
-            OPC("tabla");
+            else
+            {
+                foreach (var item in fekete.Babuk)
+                {
+                    if (item.Xpozicio == from.X && item.Ypozicio == from.Y)
+                    {
+                        lepett = item.Lep(this.Table.Table, (int)to.X, (int)to.Y);
+                    }
+                }
+            }
+           
+            OPC("table");
+            return lepett;
         }
     }
 }

@@ -15,7 +15,29 @@ namespace PerProg
 
         public override bool Lep(int[,] palya, int x, int y)
         {
-            return true;
+            bool lepett = false;
+            if (LehetsegesLepes(x,y))
+            {
+                if (palya[x,y] == 0)
+                {
+                    palya[this.Xpozicio, this.Ypozicio] = 0;
+                    palya[x, y] = (int)this.tipus * (int)this.Szin;
+                    this.Xpozicio = x;
+                    this.Ypozicio = y;
+                    lepett = true;
+                }
+            }
+            return lepett;
+        }
+
+        bool LehetsegesLepes(int x,int y)
+        {
+            bool lephet = false;
+            if ((Math.Abs(this.Xpozicio - x) == 1 && Math.Abs(this.Ypozicio-y)==2) || (Math.Abs(this.Xpozicio - x) == 2 && Math.Abs(this.Ypozicio - y) == 1))
+            {
+                lephet = true;
+            }
+            return lephet;
         }
     }
 }
