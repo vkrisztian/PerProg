@@ -105,5 +105,19 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Babuk_img\bastya_b.png" />
+    <Resource Include="Babuk_img\bastya_f.png" />
+    <Resource Include="Babuk_img\futo_b.png" />
+    <Resource Include="Babuk_img\futo_f.png" />
+    <Resource Include="Babuk_img\gyalog_b.png" />
+    <Resource Include="Babuk_img\gyalog_f.png" />
+    <Resource Include="Babuk_img\kiralyno_b.png" />
+    <Resource Include="Babuk_img\kiralyno_f.png" />
+    <Resource Include="Babuk_img\kiraly_b.png" />
+    <Resource Include="Babuk_img\kiraly_f.png" />
+    <Resource Include="Babuk_img\lo_b.png" />
+    <Resource Include="Babuk_img\lo_f.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
