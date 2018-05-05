@@ -12,11 +12,11 @@ namespace PerProg
         public int[,] Table
         {
             get { return table; }
-            set { value = table; OPC("table");  }
+            set { table = value; OPC("table");  }
         }
         public Tabla()
         {
-            this.table = new int[8, 8];
+            this.table = Util.InitTabla();
         }
     }
 }

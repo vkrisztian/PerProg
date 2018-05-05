@@ -13,7 +13,7 @@ namespace PerProg
         public Tabla Tabla
         {
             get { return tabla; }
-            set { value = tabla; }
+            set { tabla = value; OPC("tabla"); }
         }
         Jatekos feher;
         Jatekos fekete;
@@ -23,6 +23,14 @@ namespace PerProg
             feher = new Jatekos("TODO", Szin.feher);
             fekete = new Jatekos("AI", Szin.fekete);
             tabla = new Tabla();
+        }
+        public void Proba()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                Tabla.Table[1, i]=2;
+            }
+            OPC("tabla");
         }
     }
 }

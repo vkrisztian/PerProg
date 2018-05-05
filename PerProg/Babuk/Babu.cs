@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PerProg
 {
     public enum BabuTipus { gyalog = 1,bastya = 2,futo = 3, lo = 4,kiraly = 5,kiralyno = 6 }
-    public enum Szin { fekete,feher}
+    public enum Szin { fekete=-1,feher=1}
     public abstract class Babu : Bindable
     {
         int xpozicio;

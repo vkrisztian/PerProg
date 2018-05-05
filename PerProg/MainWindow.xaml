@@ -5,20 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PerProg"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-         <Image>
+        Title="MainWindow" Height="768" Width="1024">
+         <Image MouseDown="Image_MouseDown">
             <Image.Resources>
-            <local:Converter x:Key="PalyaConverter"/>
+            <local:ConverterBlack x:Key="Black"/>
+            <local:ConverterWhite x:Key="White"/>
+            <local:ConvertPawns x:Key="Pawns"/>
         </Image.Resources>
         <Image.Source>
-            <DrawingImage>
+            <DrawingImage >
                 <DrawingImage.Drawing>
-                    <DrawingGroup>
-                        <GeometryDrawing Brush="White"  Geometry="{Binding Tabla.Table, Converter={StaticResource PalyaConverter}}" >
+                    <DrawingGroup   Children="{Binding Tabla.Table, Converter={StaticResource Pawns}}">
+                        
+                        <!--<GeometryDrawing Brush="Black"  Geometry="{Binding Tabla.Table, Converter={StaticResource Black}}" >
                             <GeometryDrawing.Pen>
                                 <Pen Thickness="1" Brush="Black" ></Pen>
                             </GeometryDrawing.Pen>
                         </GeometryDrawing>
+                        <GeometryDrawing  Brush="White"  Geometry="{Binding Tabla.Table, Converter={StaticResource White}}" >
+                            <GeometryDrawing.Pen>
+                                <Pen Thickness="1" Brush="Black" ></Pen>
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>-->
                     </DrawingGroup>
                 </DrawingImage.Drawing>
             </DrawingImage>

@@ -20,12 +20,20 @@ namespace PerProg
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public ViewModel VM { get; set; }
+                
         public MainWindow()
         {
             InitializeComponent();
             VM = new ViewModel();
             this.DataContext = VM;
+        }
+
+        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            VM.Proba();
+            
         }
     }
 }

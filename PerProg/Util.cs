@@ -5,6 +5,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace PerProg
 {
@@ -21,8 +24,8 @@ namespace PerProg
                 new Lo(sor,6,szin),
                 new Futo(sor,2,szin),
                 new Futo(sor,5,szin),
-                new Kiraly(sor,3,szin),
-                new Kiralyno(sor,4,szin)
+                new Kiraly(sor,4,szin),
+                new Kiralyno(sor,3,szin)
             };
             if (szin == Szin.feher)
             {
@@ -42,7 +45,7 @@ namespace PerProg
         {
           
            int[,] table = new int[8, 8];
-           /* for (int j = 2; j < table.GetLength(0)-2; j++)
+            for (int j = 2; j < table.GetLength(0)-2; j++)
             {
                 for (int i = 0; i < table.GetLength(1); i++)
                 {
@@ -51,27 +54,28 @@ namespace PerProg
             }
             for (int i = 0; i < 8; i++)
             {
-                table[1, i] = (int)new Gyalog(1,i,Szin.fekete).tipus;
+                table[1, i] = -(int)new Gyalog(1,i,Szin.fekete).tipus;
                 table[6, i] = (int)new Gyalog(6,i,Szin.feher).tipus;
             }
-            table[0, 0] = (int)new Bastya(0,0,Szin.fekete).tipus;
-            table[0, 7] = (int)new Bastya(0,7, Szin.feher).tipus;
-            table[7, 0] = (int)new Bastya(7).tipus;
-            table[7, 7] = (int)new Bastya().tipus;
-            table[0, 1] = (int)new Lo().tipus;
-            table[0, 6] = (int)new Lo().tipus;
-            table[7, 1] = (int)new Lo().tipus;
-            table[7, 6] = (int)new Lo().tipus;
-            table[0, 2] = (int)new Futo().tipus;
-            table[0, 5] = (int)new Futo().tipus;
-            table[7, 2] = (int)new Futo().tipus;
-            table[7, 5] = (int)new Futo().tipus;
-            table[0, 3] = (int)new Kiraly().tipus;
-            table[7, 3] = (int)new Kiraly().tipus;
-            table[0, 4] = (int)new Kiralyno().tipus;
-            table[7, 4] = (int)new Kiraly().tipus;*/
+            table[0, 0] = -(int)new Bastya(0,0,Szin.fekete).tipus;
+            table[0, 7] = -(int)new Bastya(0,7, Szin.fekete).tipus;
+            table[7, 0] = (int)new Bastya(7,0,Szin.feher).tipus;
+            table[7, 7] = (int)new Bastya(7,7,Szin.feher).tipus;
+            table[0, 1] = -(int)new Lo(0,1,Szin.fekete).tipus;
+            table[0, 6] = -(int)new Lo(0,6,Szin.fekete).tipus;
+            table[7, 1] = (int)new Lo(7,1,Szin.feher).tipus;
+            table[7, 6] = (int)new Lo(7,6,Szin.feher).tipus;
+            table[0, 2] = -(int)new Futo(0,2,Szin.fekete).tipus;
+            table[0, 5] = -(int)new Futo(0,5,Szin.fekete).tipus;
+            table[7, 2] = (int)new Futo(7,2,Szin.feher).tipus;
+            table[7, 5] = (int)new Futo(7,5,Szin.feher).tipus;
+            table[0, 4] = -(int)new Kiraly(0,4,Szin.fekete).tipus;
+            table[7, 4] = (int)new Kiraly(7,4,Szin.feher).tipus;
+            table[0, 3] = -(int)new Kiralyno(0,3,Szin.fekete).tipus;
+            table[7, 3] = (int)new Kiralyno(7,3,Szin.feher).tipus;
             return table;
         }
+
     }
 
     public abstract class Bindable : INotifyPropertyChanged
