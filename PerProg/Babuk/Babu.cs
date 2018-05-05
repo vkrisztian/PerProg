@@ -16,12 +16,12 @@ namespace PerProg
         public int Xpozicio
         {
             get { return xpozicio; }
-            set { value = xpozicio; OPC("xpozicio"); }
+            set { xpozicio = value; OPC("Xpozicio"); }
         }
         public int Ypozicio
         {
             get { return ypozicio; }
-            set { value = ypozicio; OPC("ypozicio"); }
+            set { ypozicio = value; OPC("Ypozicio"); }
         }
         public Szin Szin {get;set;}
 

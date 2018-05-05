@@ -12,7 +12,7 @@ namespace PerProg
         public int[,] Table
         {
             get { return table; }
-            set { table = value; OPC("table");  }
+            set { table = value; OPC("Table");  }
         }
         public Tabla()
         {

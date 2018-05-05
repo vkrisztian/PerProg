@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -10,13 +11,18 @@ namespace PerProg
     class Jatekos
     {
         string Name { get; set; }
-        BindingList<Babu> Babuk { get; set; }
+        public ObservableCollection<Babu> Babuk { get; set; }
         Szin Szin { get; set; }
         public Jatekos(string name,Szin szin)
         {
             this.Name = name;
             this.Szin = szin;
             this.Babuk = Util.InitBabuk(szin);
+        }
+
+        public void Lep(int[,]palya)
+        {
+
         }
     }
 }

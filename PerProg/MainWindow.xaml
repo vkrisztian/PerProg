@@ -15,7 +15,7 @@
         <Image.Source>
             <DrawingImage >
                 <DrawingImage.Drawing>
-                    <DrawingGroup   Children="{Binding Tabla.Table, Converter={StaticResource Pawns}}">
+                    <DrawingGroup   Children="{Binding Table.Table, Converter={StaticResource Pawns}}">
                         
                         <!--<GeometryDrawing Brush="Black"  Geometry="{Binding Tabla.Table, Converter={StaticResource Black}}" >
                             <GeometryDrawing.Pen>

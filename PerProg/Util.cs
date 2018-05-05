@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,10 +14,10 @@ namespace PerProg
 {
     public static class Util
     {
-        public static BindingList<Babu> InitBabuk(Szin szin)
+        public static ObservableCollection<Babu> InitBabuk(Szin szin)
         {
             int sor = szin == Szin.feher ? 7 : 0;
-            BindingList<Babu> babuk = new BindingList<Babu>()
+            ObservableCollection<Babu> babuk = new ObservableCollection<Babu>()
             {
                 new Bastya(sor,0,szin),
                 new Bastya(sor,7,szin),

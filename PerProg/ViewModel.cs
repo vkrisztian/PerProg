@@ -9,11 +9,11 @@ namespace PerProg
     public class ViewModel : Bindable
     {
         public const int csempeMeret = 20;
-        Tabla tabla;
-        public Tabla Tabla
+        Tabla table;
+        public Tabla Table
         {
-            get { return tabla; }
-            set { tabla = value; OPC("tabla"); }
+            get { return table; }
+            set { table = value; OPC("Table"); }
         }
         Jatekos feher;
         Jatekos fekete;
@@ -22,13 +22,16 @@ namespace PerProg
            
             feher = new Jatekos("TODO", Szin.feher);
             fekete = new Jatekos("AI", Szin.fekete);
-            tabla = new Tabla();
+            table = new Tabla();
         }
         public void Proba()
         {
-            for (int i = 0; i < 8; i++)
+            foreach (var item in fekete.Babuk)
             {
-                Tabla.Table[1, i]=2;
+                if (item.Xpozicio == 1 && item.Ypozicio == 1)
+                {
+                    item.Lep(this.Table.Table, 2, 1);
+                }
             }
             OPC("tabla");
         }
