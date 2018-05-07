@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PerProg"
         mc:Ignorable="d"
         Title="MainWindow" Height="768" Width="1024">
-         <Image MouseDown="Image_MouseDown">
+         <Image MouseDown="Image_MouseDown" >
             <Image.Resources>
             <local:ConverterBlack x:Key="Black"/>
             <local:ConverterWhite x:Key="White"/>

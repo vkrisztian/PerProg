@@ -10,19 +10,28 @@ namespace PerProg
 {
     class Jatekos
     {
-        string Name { get; set; }
+        public string Name { get; set; }
         public ObservableCollection<Babu> Babuk { get; set; }
+        public bool sakk = false;
         Szin Szin { get; set; }
         public Jatekos(string name,Szin szin)
         {
             this.Name = name;
             this.Szin = szin;
             this.Babuk = Util.InitBabuk(szin);
+            
         }
-
-        public void Lep(int[,]palya)
+        public Babu GetKiraly()
         {
-
+            int i = -1;
+            foreach (var item in Babuk)
+            {
+                if (item.tipus == BabuTipus.kiraly)
+                {
+                    i = Babuk.IndexOf(item);
+                }
+            }
+            return Babuk.ElementAt(i);
         }
     }
 }
