@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PerProg
 {
@@ -33,5 +34,6 @@ namespace PerProg
         }
         public abstract bool Lep(int[,] palya, int x, int y);
         public abstract bool LehetsegesLepes(int x, int y,int [,] palya);
+        public abstract List<Point> LehetsegesLepesek(int[,] palya);
     }
 }

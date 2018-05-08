@@ -23,7 +23,7 @@ namespace PerProg
         {
            
             feher = new Jatekos("Jatekos", Szin.feher);
-            fekete = new Jatekos("AI", Szin.fekete);
+            fekete = new ParhuzamosJatekos("AI", Szin.fekete);
             table = new Tabla();
             sakkmatt = false;
         }
@@ -53,17 +53,13 @@ namespace PerProg
                                     feher.sakk = false;
                                     fekete.sakk = feher.SakkTesz(fekete.GetKiraly(), table.Table);
                                     OPC("table");
-                                    if (fekete.sakk)
-                                    {
-                                        MessageBox.Show("Fekete sakkban van!");
-                                    }
                                     break;
                                 }
                             }
                     }
                 }
             }
-            else
+          /* else
             {
                 foreach (var item in fekete.Babuk)
                 {
@@ -95,18 +91,78 @@ namespace PerProg
                         }
                     }
                 }
-            }
+            }*/
            
             OPC("table");
-
+            sakkmatt = SakkMattCheck(!aktualisjatekos);
 
             if (sakkmatt)
             {
                 string nev = aktualisjatekos == true ? feher.Name : fekete.Name;
-                MessageBox.Show("Játék vége nyert: " + nev);
+                MessageBox.Show("Sakk Matt!\nJáték vége nyert: " + nev);
             }
             return lepett;
         }
+
+        private bool SakkMattCheck(bool aktualisjatekos)
+        {
+            Babu temp = null;
+            bool sakkmatt = false;
+            bool sakk = false;
+            if (aktualisjatekos)
+            {
+               temp = feher.GetKiraly();
+                sakk = feher.sakk;
+            }
+            else
+            {
+                temp = fekete.GetKiraly();
+                sakk = fekete.sakk;
+            }
+            if (sakk)
+            {
+                List<Point> kiralyLehetsegesLepesek = temp.LehetsegesLepesek(table.Table);
+                foreach (var item in kiralyLehetsegesLepesek)
+                {
+                    if (!SakkbaLep((int)item.X,(int)item.Y,temp,aktualisjatekos))
+                    {
+                        return false;
+                    }
+                }
+                if (aktualisjatekos)
+                {
+                    foreach (var item in feher.Babuk)
+                    {
+                        List<Point> babuLepesei = item.LehetsegesLepesek(table.Table);
+                        foreach (var lepes in babuLepesei)
+                        {
+                            if (!SakkbaLep((int)lepes.X, (int)lepes.Y, item, aktualisjatekos))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var item in fekete.Babuk)
+                    {
+                        List<Point> babuLepesei = item.LehetsegesLepesek(table.Table);
+                        foreach (var lepes in babuLepesei)
+                        {
+                            if (!SakkbaLep((int)lepes.X, (int)lepes.Y, item, aktualisjatekos))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                sakkmatt = true;
+            }
+            return sakkmatt;
+        }
+
+
         void Leut(int x , int y,bool aktualisjatekos)
         {
             int i = -1;
@@ -217,6 +273,14 @@ namespace PerProg
             babu.Ypozicio = tempy;
 
             return megmindigSakk;
+        }
+
+        bool ParhuzamosJatekosLepett()
+        {
+            bool aktualisjatekos = false;
+            bool lepett = false;
+
+            return lepett;
         }
     }
 

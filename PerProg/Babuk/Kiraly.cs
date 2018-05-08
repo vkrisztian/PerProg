@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PerProg
 {
@@ -17,10 +18,14 @@ namespace PerProg
             bool lepett = false;
             if (LehetsegesLepes(x,y,palya))
             {
-                if (palya[x,y]== 0 || palya[x, y] * (int)this.Szin < 0)
+                if (x>=0 && y >=0 && x<=7 && y <= 7)
                 {
-                    lepett = true;
+                    if (palya[x, y] == 0 || palya[x, y] * (int)this.Szin < 0)
+                    {
+                        lepett = true;
+                    }
                 }
+ 
             }
             return lepett;
         }
@@ -33,6 +38,22 @@ namespace PerProg
                 lephet = true;
             }
             return lephet;
+        }
+
+        public override List<Point> LehetsegesLepesek(int[,] palya)
+        {
+            List<Point> lepesek = new List<Point>();
+            for (int i = 0; i < palya.GetLength(0); i++)
+            {
+                for (int j = 0; j < palya.GetLength(1); j++)
+                {
+                    if (Lep(palya,i,j))
+                    {
+                        lepesek.Add(new Point(i, j));
+                    }
+                }
+            }
+            return lepesek;
         }
     }
 }

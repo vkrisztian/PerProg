@@ -62,6 +62,7 @@
     <Compile Include="Babuk\Kiralyno.cs" />
     <Compile Include="Babuk\Lo.cs" />
     <Compile Include="Converter.cs" />
+    <Compile Include="ParhuzamosJatekos.cs" />
     <Compile Include="Tabla.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="ViewModel.cs" />

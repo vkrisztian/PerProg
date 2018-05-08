@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PerProg
 {
@@ -64,6 +65,22 @@ namespace PerProg
             }
             
             return lephet;
+        }
+
+        public override List<Point> LehetsegesLepesek(int[,] palya)
+        {
+            List<Point> lepesek = new List<Point>();
+            for (int i = 0; i < palya.GetLength(0); i++)
+            {
+                for (int j = 0; j < palya.GetLength(1); j++)
+                {
+                    if (Lep(palya, i, j))
+                    {
+                        lepesek.Add(new Point(i, j));
+                    }
+                }
+            }
+            return lepesek;
         }
     }
 }
