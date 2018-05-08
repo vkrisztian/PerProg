@@ -31,7 +31,7 @@ namespace PerProg
             ypozicio = y;
             this.Szin = color;
         }
-        public abstract bool Lep(int[,] palya, int x, int y,bool sakk);
+        public abstract bool Lep(int[,] palya, int x, int y);
         public abstract bool LehetsegesLepes(int x, int y,int [,] palya);
     }
 }

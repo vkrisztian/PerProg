@@ -36,15 +36,30 @@ namespace PerProg
                 {
                     if (item.Xpozicio == from.X && item.Ypozicio == from.Y)
                     {
-                        lepett = item.Lep(this.Table.Table, (int)to.X, (int)to.Y,feher.sakk);
-                        if (lepett)
-                        {
-                            Leut((int)to.X, (int)to.Y, aktualisjatekos);
-                            fekete.sakk = SakkTesz(fekete.GetKiraly(), !aktualisjatekos);
-                            OPC("table");
-                          
-                        }
-                        break;
+                            lepett = item.Lep(this.Table.Table, (int)to.X, (int)to.Y);
+                            if (lepett)
+                            {
+                                if (SakkbaLep((int)to.X, (int)to.Y, item, aktualisjatekos))
+                                {
+                                    lepett = false;
+                                }
+                                else
+                                {
+                                    Table.Table[item.Xpozicio, item.Ypozicio] = 0;
+                                    Table.Table[(int)to.X, (int)to.Y] = (int)item.tipus * (int)item.Szin;
+                                    item.Xpozicio = (int)to.X;
+                                    item.Ypozicio = (int)to.Y;
+                                    Leut((int)to.X, (int)to.Y, aktualisjatekos);
+                                    feher.sakk = false;
+                                    fekete.sakk = feher.SakkTesz(fekete.GetKiraly(), table.Table);
+                                    OPC("table");
+                                    if (fekete.sakk)
+                                    {
+                                        MessageBox.Show("Fekete sakkban van!");
+                                    }
+                                    break;
+                                }
+                            }
                     }
                 }
             }
@@ -54,18 +69,30 @@ namespace PerProg
                 {
                     if (item.Xpozicio == from.X && item.Ypozicio == from.Y)
                     {
-                        lepett = item.Lep(this.Table.Table, (int)to.X, (int)to.Y,fekete.sakk);
+                        lepett = item.Lep(this.Table.Table, (int)to.X, (int)to.Y);
                         if (lepett)
                         {
-                            Leut((int)to.X, (int)to.Y, aktualisjatekos);
-                            feher.sakk = SakkTesz(feher.GetKiraly(), !aktualisjatekos);
-                            OPC("table");
-                            if (feher.sakk)
+                            if (SakkbaLep((int)to.X, (int)to.Y, item, aktualisjatekos))
                             {
-                                MessageBox.Show("Sakk!");
+                                lepett = false;
+                            }
+                            else
+                            {
+                                Table.Table[item.Xpozicio, item.Ypozicio] = 0;
+                                Table.Table[(int)to.X, (int)to.Y] = (int)item.tipus * (int)item.Szin;
+                                item.Xpozicio = (int)to.X;
+                                item.Ypozicio = (int)to.Y;
+                                Leut((int)to.X, (int)to.Y, aktualisjatekos);
+                                fekete.sakk = false;
+                                feher.sakk = fekete.SakkTesz(feher.GetKiraly(), table.Table);
+                                OPC("table");
+                                if (feher.sakk)
+                                {
+                                    MessageBox.Show("Fehér Sakkban van!");
+                                }
+
                             }
                         }
-                        break;
                     }
                 }
             }
@@ -116,30 +143,80 @@ namespace PerProg
 
         }
 
-        bool SakkTesz(Babu kiraly, bool aktualisJatekos)
+        Babu IdeiglenesLeut(int x, int y , bool aktualisjatekos)
         {
-            bool sakk = false;
-            if (aktualisJatekos)
+            Babu temp = null;
+            if (aktualisjatekos)
             {
                 foreach (var item in fekete.Babuk)
                 {
-                    if (item.LehetsegesLepes(kiraly.Xpozicio,kiraly.Ypozicio,Table.Table))
+                    if (item.Xpozicio == x && item.Ypozicio == y)
                     {
-                        sakk = true;
+                        temp = item;
                     }
                 }
+                if (temp != null)
+                    fekete.Babuk.Remove(temp);
             }
             else
             {
                 foreach (var item in feher.Babuk)
                 {
-                    if (item.LehetsegesLepes(kiraly.Xpozicio, kiraly.Ypozicio, Table.Table))
+                    if (item.Xpozicio == x && item.Ypozicio == y)
                     {
-                        sakk = true;
+                        temp = item;
                     }
                 }
+                if (temp != null)
+                    feher.Babuk.Remove(temp);
             }
-            return sakk;
+            return temp;
+        }
+        bool SakkbaLep(int x,int y,Babu babu,bool aktualisjatekos)
+        {
+            bool megmindigSakk = true;
+            int tempx = babu.Xpozicio;
+            int tempy = babu.Ypozicio;
+            babu.Xpozicio = x;
+            babu.Ypozicio = y;
+            int[,] temp = Util.CreateTemp(Table.Table);
+            temp[tempx, tempy] = 0;
+            temp[x, y] = (int)babu.tipus * (int)babu.Szin;
+            Babu ideiglenesenLeutott = IdeiglenesLeut(x, y, aktualisjatekos);
+            if (aktualisjatekos)
+            {
+                if (fekete.SakkTesz(feher.GetKiraly(),temp))
+                {
+                    megmindigSakk = true;
+                }
+                else
+                {
+                    megmindigSakk = false;
+                }
+                if (ideiglenesenLeutott != null)
+                {
+                    fekete.Babuk.Add(ideiglenesenLeutott);
+                }
+            }
+            else
+            {
+                if (feher.SakkTesz(fekete.GetKiraly(), temp))
+                {
+                    megmindigSakk = true;
+                }
+                else
+                {
+                    megmindigSakk = false;
+                }
+                if (ideiglenesenLeutott != null)
+                {
+                    feher.Babuk.Add(ideiglenesenLeutott);
+                }
+            }
+            babu.Xpozicio = tempx;
+            babu.Ypozicio = tempy;
+
+            return megmindigSakk;
         }
     }
 

@@ -33,5 +33,19 @@ namespace PerProg
             }
             return Babuk.ElementAt(i);
         }
+
+        public bool SakkTesz(Babu kiraly,int[,] palya)
+        {
+            bool sakk = false;
+                foreach (var item in Babuk)
+                {
+                    if (item.LehetsegesLepes(kiraly.Xpozicio, kiraly.Ypozicio, palya))
+                    {
+                        sakk = true;
+                    }
+                }
+
+            return sakk;
+        }
     }
 }

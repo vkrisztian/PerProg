@@ -14,7 +14,7 @@ namespace PerProg
             this.tipus = BabuTipus.gyalog;
         }
 
-        public override bool Lep(int[,] palya, int x, int y, bool sakk)
+        public override bool Lep(int[,] palya, int x, int y)
         {
             StreamWriter sw = new StreamWriter("log.txt");
             for (int i = 0; i < palya.GetLength(0); i++)
@@ -30,10 +30,6 @@ namespace PerProg
             
             if(LehetsegesLepes(x,y,palya))
             {
-                palya[this.Xpozicio, this.Ypozicio] = 0;
-                palya[x, y] = (int)this.tipus * (int)this.Szin;
-                this.Xpozicio = x;
-                this.Ypozicio = y;
                 return true;
             }
             

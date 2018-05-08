@@ -77,6 +77,19 @@ namespace PerProg
             return table;
         }
 
+        public static int [,] CreateTemp(int[,] palya)
+        {
+            int[,] temp = new int[8, 8];
+            for (int i = 0; i < palya.GetLength(0); i++)
+            {
+                for (int j = 0; j < palya.GetLength(1); j++)
+                {
+                    temp[i, j] = palya[i, j];
+                }
+            }
+            return temp;
+        }
+
     }
 
     public abstract class Bindable : INotifyPropertyChanged
