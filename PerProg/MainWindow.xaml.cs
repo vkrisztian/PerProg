@@ -35,6 +35,8 @@ namespace PerProg
 
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (aktualisJatekos)
+            {
                 if (clickCount < 1)
                 {
                     Point p = e.GetPosition((Image)this.Content);
@@ -60,6 +62,15 @@ namespace PerProg
                     }
                     clickCount--;
                 }
+            }
+            else
+            {
+                bool lepett = VM.ParhuzamosJatekosLepett();
+                if (lepett)
+                {
+                    aktualisJatekos = !aktualisJatekos;
+                }
+            }
             
             
 
