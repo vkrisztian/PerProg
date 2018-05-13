@@ -70,16 +70,20 @@ namespace PerProg
         public override List<Point> LehetsegesLepesek(int[,] palya)
         {
             List<Point> lepesek = new List<Point>();
-            for (int i = 0; i < palya.GetLength(0); i++)
+            if (aktiv)
             {
-                for (int j = 0; j < palya.GetLength(1); j++)
+                for (int i = 0; i < palya.GetLength(0); i++)
                 {
-                    if (Lep(palya, i, j))
+                    for (int j = 0; j < palya.GetLength(1); j++)
                     {
-                        lepesek.Add(new Point(i, j));
+                        if (Lep(palya, i, j))
+                        {
+                            lepesek.Add(new Point(i, j));
+                        }
                     }
                 }
             }
+            
             return lepesek;
         }
     }

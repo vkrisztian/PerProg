@@ -9,50 +9,67 @@ namespace PerProg
 {
     class ParhuzamosJatekos : Jatekos
     {
-
-        public ParhuzamosJatekos(string name, Szin szin) : base(name, szin)
+        Point vegsolepes;
+        Babu vegsoLepo;
+        Jatekos ellenfel;
+        public ParhuzamosJatekos(string name, Szin szin,Jatekos ellenfel) : base(name, szin)
         {
-
+            this.ellenfel = ellenfel;
         }
 
-        public Point[] LepesKiszamit(int[,]tabla,Jatekos feher)
+        public Point[] LepesKiszamit(int szint,int[,]tabla,bool aktualisjatekos)
         {
-            List<List<Point>> osszesLehetsegesLepes = new List<List<Point>>();
             Point[] fromTo = new Point[2];
+            Point[] defaultlepes = new Point[2];
             foreach (var item in Babuk)
             {
-                osszesLehetsegesLepes.Add(item.LehetsegesLepesek(tabla));
+                foreach (var lepes in item.LehetsegesLepesek(tabla))
+                {
+                    defaultlepes[0] = new Point((int)item.Xpozicio, (int)item.Ypozicio);
+                    defaultlepes[1] = lepes;
+                    break;
+                }   
             }
-
+            Kereses(szint, tabla,defaultlepes[0],defaultlepes[1],aktualisjatekos);
+            fromTo[0] = new Point(vegsoLepo.Xpozicio, vegsoLepo.Ypozicio);
+            fromTo[1] = vegsolepes;
+            //fromTo[0] = defaultlepes[0];
+            //fromTo[1] = defaultlepes[1];
             return fromTo;
         }
-        bool SakkbaLep(int x, int y, Babu babu, Jatekos feher, int[,] tabla)
+        int LepesErtekel(int x, int y, Point from, Jatekos feher, int[,] tabla)
         {
-            bool megmindigSakk = true;
+            Babu babu = null;
+            foreach (var item in feher.Babuk)
+            {
+                if (item.Xpozicio == (int)from.X && item.Ypozicio == (int)from.Y)
+                {
+                    babu = item;
+                }
+            }
+            int ertek = 0;
             int tempx = babu.Xpozicio;
             int tempy = babu.Ypozicio;
             babu.Xpozicio = x;
             babu.Ypozicio = y;
-            int[,] temp = Util.CreateTemp(tabla);
-            temp[tempx, tempy] = 0;
-            temp[x, y] = (int)babu.tipus * (int)babu.Szin;
+            ertek = tabla[x, y];
+            tabla[tempx, tempy] = 0;
+            tabla[x, y] = (int)babu.tipus * (int)babu.Szin;
             Babu ideiglenesenLeutott = IdeiglenesLeut(x, y,feher);
-            if (feher.SakkTesz(this.GetKiraly(), temp))
+
+            //sakkba lépne invalid lépés negativ érték
+            if (feher.SakkTesz(this.GetKiraly(), tabla))
             {
-                megmindigSakk = true;
-            }
-            else
-            {
-                megmindigSakk = false;
+                ertek = -1;
             }
             if (ideiglenesenLeutott != null)
             {
-                feher.Babuk.Add(ideiglenesenLeutott);
+                ideiglenesenLeutott.aktiv = true;
             }
             babu.Xpozicio = tempx;
             babu.Ypozicio = tempy;
 
-            return megmindigSakk;
+            return ertek;
         }
 
         Babu IdeiglenesLeut(int x, int y, Jatekos feher)
@@ -66,9 +83,90 @@ namespace PerProg
                 }
             }
             if (temp != null)
-                feher.Babuk.Remove(temp);
+                temp.aktiv = false;
 
             return temp;
         }
+
+        int  Kereses(int szint, int[,] tabla, Point from, Point to,bool ai)
+        {
+            if (szint == 0)
+            {
+               return LepesErtekel((int)to.X, (int)to.Y, from, this, tabla);
+            }
+            if (ai)
+            {
+                int legjobbErtek = 9999;
+                foreach (var item in this.Babuk)
+                {
+                    foreach (var lepes in item.LehetsegesLepesek(tabla))
+                    {
+                        Babu temp = IdeiglenesLeut((int)lepes.X, (int)lepes.Y,ellenfel);
+                        Point honnan = IdeigLenesenMozgat(item, lepes, tabla);
+                        Point ideiglenesTo = new Point(item.Xpozicio, item.Ypozicio);
+                        int ertek =  Kereses(szint - 1, tabla,new Point(item.Xpozicio,item.Ypozicio),lepes, !ai);
+                        if (legjobbErtek> ertek)
+                        {
+                            legjobbErtek = ertek;
+                            vegsolepes = lepes;
+                            vegsoLepo = item;
+                        }
+                        visszaAllit(item, temp, honnan,tabla,ellenfel);
+                    }
+                }
+                return legjobbErtek;
+            }
+            else
+            {
+                int legjobbErtek = -9999;
+                foreach (var item in ellenfel.Babuk)
+                {
+                    foreach (var lepes in item.LehetsegesLepesek(tabla))
+                    {
+                        Babu temp = IdeiglenesLeut((int)lepes.X, (int)lepes.Y, this);
+                        Point honnan = IdeigLenesenMozgat(item, lepes, tabla);
+                        Point ideiglenesTo = new Point(item.Xpozicio, item.Ypozicio);
+                        int ertek = Kereses(szint - 1, tabla, honnan, ideiglenesTo, !ai);
+                        if (legjobbErtek< ertek)
+                        {
+                            legjobbErtek = ertek;
+                        }
+                        visszaAllit(item, temp, honnan, tabla, this);
+
+                    }
+                }
+                return legjobbErtek;
+            }
+
+        }
+
+        Point IdeigLenesenMozgat(Babu babu,Point to,int [,] tabla)
+        {
+            Point honnan = new Point(babu.Xpozicio, babu.Ypozicio);
+            tabla[babu.Xpozicio, babu.Ypozicio] = 0;
+            babu.Xpozicio = (int)to.X;
+            babu.Ypozicio = (int)to.Y;
+            tabla[babu.Xpozicio, babu.Ypozicio] = (int)babu.tipus * (int)babu.Szin;
+            return honnan;
+        }
+        void visszaAllit(Babu visszamozgat, Babu leutott,Point hova,int[,] tabla,Jatekos jatekos)
+        {
+            int tempx = visszamozgat.Xpozicio;
+            int tempy = visszamozgat.Ypozicio;
+            visszamozgat.Xpozicio = (int)hova.X;
+            visszamozgat.Ypozicio = (int)hova.Y;
+            tabla[(int)hova.X, (int)hova.Y] = (int)visszamozgat.tipus * (int)visszamozgat.Szin;
+            if (leutott != null)
+            {
+                leutott.aktiv = true;
+                tabla[tempx, tempy] = (int)leutott.tipus * (int)leutott.Szin;
+            }
+            else
+            {
+                tabla[tempx, tempy] = 0;
+            }
+           
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace PerProg
         {
 
             feher = new Jatekos("Jatekos", Szin.feher);
-            fekete = new ParhuzamosJatekos("AI", Szin.fekete);
+            fekete = new ParhuzamosJatekos("AI", Szin.fekete,feher);
             table = new Tabla();
             sakkmatt = false;
         }
@@ -52,7 +53,17 @@ namespace PerProg
                                 Leut((int)to.X, (int)to.Y, aktualisjatekos);
                                 feher.sakk = false;
                                 fekete.sakk = feher.SakkTesz(fekete.GetKiraly(), table.Table);
-                                OPC("table");
+                                OPC("Table");
+                                StreamWriter sw = new StreamWriter("log.txt");
+                                for (int i = 0; i < table.Table.GetLength(0); i++)
+                                {
+                                    for (int j = 0; j < table.Table.GetLength(1); j++)
+                                    {
+                                        sw.Write(table.Table[i, j] + "\t");
+                                    }
+                                    sw.WriteLine();
+                                }
+                                sw.Close();
                                 break;
                             }
                         }
@@ -72,7 +83,7 @@ namespace PerProg
                         Leut((int)to.X, (int)to.Y, aktualisjatekos);
                         fekete.sakk = false;
                         feher.sakk = fekete.SakkTesz(feher.GetKiraly(), table.Table);
-                        OPC("table");
+                        OPC("Table");
                         if (feher.sakk)
                         {
                             MessageBox.Show("Fehér Sakkban van!");
@@ -268,8 +279,8 @@ namespace PerProg
             bool aktualisjatekos = false;
             bool lepett = false;
             Point[] fromto = new Point[2];
-            fromto = fekete.LepesKiszamit(Table.Table, feher);
-            Lepes(fromto[0], fromto[1], !aktualisjatekos);
+            fromto = fekete.LepesKiszamit(1, Table.Table, true);
+            Lepes(fromto[0], fromto[1], aktualisjatekos);
             return lepett;
         }
     }

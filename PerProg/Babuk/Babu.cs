@@ -7,12 +7,13 @@ using System.Windows;
 
 namespace PerProg
 {
-    public enum BabuTipus { gyalog = 1,bastya = 2,futo = 3, lo = 4,kiraly = 5,kiralyno = 6 }
+    public enum BabuTipus { gyalog = 10,bastya = 50,futo = 30, lo = 31,kiraly = 900,kiralyno = 90 }
     public enum Szin { fekete=-1,feher=1}
     public abstract class Babu : Bindable
     {
         int xpozicio;
         int ypozicio;
+        public bool aktiv;
         public BabuTipus tipus { get; set; }
         public int Xpozicio
         {
@@ -30,6 +31,7 @@ namespace PerProg
         {
             xpozicio = x;
             ypozicio = y;
+            aktiv = true;
             this.Szin = color;
         }
         public abstract bool Lep(int[,] palya, int x, int y);

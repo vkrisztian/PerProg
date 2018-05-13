@@ -135,40 +135,40 @@ namespace PerProg
                 {
                     switch (tabla[i,j])
                     {
-                        case -1:
+                        case -10:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\gyalog_b.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case 1:
+                        case 10:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\gyalog_f.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case -2:
+                        case -50:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\bastya_b.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case 2:
+                        case 50:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\bastya_f.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case -3:
+                        case -30:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\futo_b.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case 3:
+                        case 30:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\futo_f.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case -4:
+                        case -31:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\lo_b.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case 4:
+                        case 31:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\lo_f.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case -5:
+                        case -900:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\kiraly_b.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case 5:
+                        case 900:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\kiraly_f.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case -6:
+                        case -90:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\kiralyno_b.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
-                        case 6:
+                        case 90:
                             dg.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"..\..\Babuk_img\kiralyno_f.png", UriKind.Relative)), new Rect(j * ViewModel.csempeMeret, i * ViewModel.csempeMeret, ViewModel.csempeMeret, ViewModel.csempeMeret)));
                             break;
                         default:
