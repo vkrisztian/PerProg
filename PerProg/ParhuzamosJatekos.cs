@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,10 @@ namespace PerProg
         Point vegsolepes;
         Babu vegsoLepo;
         Jatekos ellenfel;
+        bool keresesVege = false;
+        object lockobject;
+        int szint;
+        ConcurrentBag<int[,]> tablestates = new ConcurrentBag<int[,]>();
         public ParhuzamosJatekos(string name, Szin szin,Jatekos ellenfel) : base(name, szin)
         {
             this.ellenfel = ellenfel;
@@ -20,8 +25,10 @@ namespace PerProg
         public Point[] LepesKiszamit(int szint,int[,]tabla,bool aktualisjatekos)
         {
             Point[] fromTo = new Point[2];
+            this.szint = szint;
             int[,] temp = Util.CreateTemp(tabla);
-            Kereses(szint, temp,aktualisjatekos);
+            //Kereses(szint, temp,aktualisjatekos);
+            ParhuzamosKereses(szint, tabla, aktualisjatekos);
             fromTo[0] = new Point(vegsoLepo.Xpozicio, vegsoLepo.Ypozicio);
             fromTo[1] = vegsolepes;
            // fromTo[0] = defaultlepes[0];
@@ -46,6 +53,19 @@ namespace PerProg
             return temp;
         }
 
+        int ParhuzamosKereses(int szint, int [,] tabla, bool ai)
+        {
+            int ertek = 0;
+            List<Task> workers = new List<Task>();
+            for (int i = 0; i < 4; i++)
+            {
+                Task t = new Task(() => SlaveKeres());
+                workers.Add(t);
+            }
+
+            Task.WaitAll(workers.ToArray());
+            return ertek;
+        }
         int  Kereses(int szint, int[,] tabla, bool ai)
         {
             if (szint == 0)
@@ -65,9 +85,12 @@ namespace PerProg
                         ertek += szint;
                         if (legjobbErtek> ertek)
                         {
-                            legjobbErtek = ertek;
-                            vegsolepes = lepes;
-                            vegsoLepo = item;
+                            lock (lockobject)
+                            {
+                                legjobbErtek = ertek;
+                                vegsolepes = lepes;
+                                vegsoLepo = item;
+                            }
                         }
                         visszaAllit(item, temp, honnan,tabla,ellenfel);
                     }
@@ -95,6 +118,18 @@ namespace PerProg
                 return legjobbErtek;
             }
 
+        }
+
+        void SlaveKeres()
+        {
+            int [,] ertek;
+            while (!keresesVege)
+            {
+                if (tablestates.TryTake(out ertek))
+                {
+                    Kereses(szint, ertek, false);
+                }
+            }
         }
 
         private int tablaKiertekel(int[,] tabla)
