@@ -46,6 +46,10 @@ namespace PerProg
 
                 int tx = xi;
                 int ty = yi;
+                if (palya[this.Xpozicio + tx, this.Ypozicio + ty] != 0)
+                {
+                    return false;
+                }
                 while (this.Xpozicio + tx != x || this.Ypozicio+ty != y)
                 {
                     if (palya[this.Xpozicio + tx, this.Ypozicio + ty] != 0)

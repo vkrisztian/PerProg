@@ -20,57 +20,15 @@ namespace PerProg
         public Point[] LepesKiszamit(int szint,int[,]tabla,bool aktualisjatekos)
         {
             Point[] fromTo = new Point[2];
-            Point[] defaultlepes = new Point[2];
-            foreach (var item in Babuk)
-            {
-                foreach (var lepes in item.LehetsegesLepesek(tabla))
-                {
-                    defaultlepes[0] = new Point((int)item.Xpozicio, (int)item.Ypozicio);
-                    defaultlepes[1] = lepes;
-                    break;
-                }   
-            }
-            Kereses(szint, tabla,defaultlepes[0],defaultlepes[1],aktualisjatekos);
+            int[,] temp = Util.CreateTemp(tabla);
+            Kereses(szint, temp,aktualisjatekos);
             fromTo[0] = new Point(vegsoLepo.Xpozicio, vegsoLepo.Ypozicio);
             fromTo[1] = vegsolepes;
-            //fromTo[0] = defaultlepes[0];
+           // fromTo[0] = defaultlepes[0];
             //fromTo[1] = defaultlepes[1];
             return fromTo;
         }
-        int LepesErtekel(int x, int y, Point from, Jatekos feher, int[,] tabla)
-        {
-            Babu babu = null;
-            foreach (var item in feher.Babuk)
-            {
-                if (item.Xpozicio == (int)from.X && item.Ypozicio == (int)from.Y)
-                {
-                    babu = item;
-                }
-            }
-            int ertek = 0;
-            int tempx = babu.Xpozicio;
-            int tempy = babu.Ypozicio;
-            babu.Xpozicio = x;
-            babu.Ypozicio = y;
-            ertek = tabla[x, y];
-            tabla[tempx, tempy] = 0;
-            tabla[x, y] = (int)babu.tipus * (int)babu.Szin;
-            Babu ideiglenesenLeutott = IdeiglenesLeut(x, y,feher);
-
-            //sakkba lépne invalid lépés negativ érték
-            if (feher.SakkTesz(this.GetKiraly(), tabla))
-            {
-                ertek = -1;
-            }
-            if (ideiglenesenLeutott != null)
-            {
-                ideiglenesenLeutott.aktiv = true;
-            }
-            babu.Xpozicio = tempx;
-            babu.Ypozicio = tempy;
-
-            return ertek;
-        }
+    
 
         Babu IdeiglenesLeut(int x, int y, Jatekos feher)
         {
@@ -88,11 +46,11 @@ namespace PerProg
             return temp;
         }
 
-        int  Kereses(int szint, int[,] tabla, Point from, Point to,bool ai)
+        int  Kereses(int szint, int[,] tabla, bool ai)
         {
             if (szint == 0)
             {
-               return LepesErtekel((int)to.X, (int)to.Y, from, this, tabla);
+                return tablaKiertekel(tabla);
             }
             if (ai)
             {
@@ -103,8 +61,8 @@ namespace PerProg
                     {
                         Babu temp = IdeiglenesLeut((int)lepes.X, (int)lepes.Y,ellenfel);
                         Point honnan = IdeigLenesenMozgat(item, lepes, tabla);
-                        Point ideiglenesTo = new Point(item.Xpozicio, item.Ypozicio);
-                        int ertek =  Kereses(szint - 1, tabla,new Point(item.Xpozicio,item.Ypozicio),lepes, !ai);
+                        int ertek =  Kereses(szint - 1, tabla, !ai);
+                        ertek += szint;
                         if (legjobbErtek> ertek)
                         {
                             legjobbErtek = ertek;
@@ -125,8 +83,7 @@ namespace PerProg
                     {
                         Babu temp = IdeiglenesLeut((int)lepes.X, (int)lepes.Y, this);
                         Point honnan = IdeigLenesenMozgat(item, lepes, tabla);
-                        Point ideiglenesTo = new Point(item.Xpozicio, item.Ypozicio);
-                        int ertek = Kereses(szint - 1, tabla, honnan, ideiglenesTo, !ai);
+                        int ertek = Kereses(szint - 1, tabla,!ai);
                         if (legjobbErtek< ertek)
                         {
                             legjobbErtek = ertek;
@@ -138,6 +95,36 @@ namespace PerProg
                 return legjobbErtek;
             }
 
+        }
+
+        private int tablaKiertekel(int[,] tabla)
+        {
+            int ertek = 0;
+            int aibabuk = 0;
+            int ellenfelbabuk = 0;
+            for (int i = 0; i < tabla.GetLength(0); i++)
+            {
+                for (int j = 0; j < tabla.GetLength(1); j++)
+                {
+                    if (tabla[i,j] > 0)
+                    {
+                        ellenfelbabuk += tabla[i, j];
+                    }
+                    else
+                    {
+                        aibabuk -= tabla[i, j];
+                    }
+                }
+            }
+            ertek += Math.Abs(aibabuk) - ellenfelbabuk;
+            for (int i = 0; i < tabla.GetLength(0); i++)
+            {
+                if (tabla[1,i] != -10)
+                {
+                    ertek -= 10;
+                }
+            }
+            return ertek;
         }
 
         Point IdeigLenesenMozgat(Babu babu,Point to,int [,] tabla)

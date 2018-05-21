@@ -33,16 +33,19 @@ namespace PerProg
             bool lephet = false;
             if (this.Szin == Szin.fekete)
             {
-                if (this.Xpozicio + 1 == x && this.Ypozicio == y && palya[x, y] == 0)
+                if (this.Xpozicio + 1 == x && this.Ypozicio == y && palya[x, y] == 0 && this.Xpozicio+1 < 7)
                 {
                     lephet = true;
                 }
-                else if (Math.Abs(this.Xpozicio - x) == 1 && Math.Abs(this.Ypozicio - y) == 1)
+                else if (this.Xpozicio+1 == x && Math.Abs(this.Ypozicio - y) == 1)
                 {
                     int dy = y - this.Ypozicio;
-                    if (palya[this.Xpozicio + 1, this.Ypozicio + dy] != 0 && palya[x, y] * (int)this.Szin < 0)
+                    if (this.Xpozicio +1 <= 7)
                     {
-                        lephet = true;
+                        if (palya[this.Xpozicio + 1, this.Ypozicio + dy] != 0 && palya[x, y] * (int)this.Szin < 0)
+                        {
+                            lephet = true;
+                        }
                     }
                 }
             }
@@ -52,12 +55,15 @@ namespace PerProg
                 {
                     lephet = true;
                 }
-                else if (Math.Abs(this.Xpozicio - x) == 1 && Math.Abs(this.Ypozicio - y) == 1)
+                else if (this.Xpozicio-1 == x && Math.Abs(this.Ypozicio - y) == 1)
                 {
                     int dy = y - this.Ypozicio;
-                    if (palya[this.Xpozicio - 1, this.Ypozicio + dy] != 0 && palya[x, y] * (int)this.Szin < 0)
+                    if (this.Xpozicio-1 >= 0)
                     {
-                        lephet = true;
+                        if (palya[this.Xpozicio - 1, this.Ypozicio + dy] != 0 && palya[x, y] * (int)this.Szin < 0)
+                        {
+                            lephet = true;
+                        }
                     }
                 }
             }

@@ -279,7 +279,7 @@ namespace PerProg
             bool aktualisjatekos = false;
             bool lepett = false;
             Point[] fromto = new Point[2];
-            fromto = fekete.LepesKiszamit(1, Table.Table, true);
+            fromto = fekete.LepesKiszamit(3, Table.Table, true);
             Lepes(fromto[0], fromto[1], aktualisjatekos);
             return lepett;
         }
