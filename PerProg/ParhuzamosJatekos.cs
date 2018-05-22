@@ -27,8 +27,8 @@ namespace PerProg
             Point[] fromTo = new Point[2];
             this.szint = szint;
             int[,] temp = Util.CreateTemp(tabla);
-            //Kereses(szint, temp,aktualisjatekos);
-            ParhuzamosKereses(szint, tabla, aktualisjatekos);
+            Kereses(szint, temp,aktualisjatekos);
+            //ParhuzamosKereses(szint, tabla, aktualisjatekos);
             fromTo[0] = new Point(vegsoLepo.Xpozicio, vegsoLepo.Ypozicio);
             fromTo[1] = vegsolepes;
            // fromTo[0] = defaultlepes[0];
@@ -85,12 +85,10 @@ namespace PerProg
                         ertek += szint;
                         if (legjobbErtek> ertek)
                         {
-                            lock (lockobject)
-                            {
+
                                 legjobbErtek = ertek;
                                 vegsolepes = lepes;
                                 vegsoLepo = item;
-                            }
                         }
                         visszaAllit(item, temp, honnan,tabla,ellenfel);
                     }

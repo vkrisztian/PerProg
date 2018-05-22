@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -280,7 +281,12 @@ namespace PerProg
             bool lepett = false;
             Point[] fromto = new Point[2];
             fromto = fekete.LepesKiszamit(5, Table.Table, true);
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            fromto = fekete.LepesKiszamit(5, Table.Table, true);
             Lepes(fromto[0], fromto[1], aktualisjatekos);
+            sw.Stop();
+            MessageBox.Show(sw.ElapsedMilliseconds.ToString());
             return lepett;
         }
     }
