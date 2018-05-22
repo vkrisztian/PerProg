@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -14,28 +15,27 @@ namespace PerProg
         Babu vegsoLepo;
         Jatekos ellenfel;
         bool keresesVege = false;
-        object lockobject;
+        object lockobject = new object();
         int szint;
-        ConcurrentBag<int[,]> tablestates = new ConcurrentBag<int[,]>();
-        public ParhuzamosJatekos(string name, Szin szin,Jatekos ellenfel) : base(name, szin)
+        int maxTask = 3;
+        int taskSzam = 0;
+        public ParhuzamosJatekos(string name, Szin szin, Jatekos ellenfel) : base(name, szin)
         {
             this.ellenfel = ellenfel;
         }
 
-        public Point[] LepesKiszamit(int szint,int[,]tabla,bool aktualisjatekos)
+        public Point[] LepesKiszamit(int szint, int[,] tabla, bool aktualisjatekos)
         {
             Point[] fromTo = new Point[2];
             this.szint = szint;
             int[,] temp = Util.CreateTemp(tabla);
             //Kereses(szint, temp,aktualisjatekos);
-            ParhuzamosKereses(szint, tabla, aktualisjatekos);
-            fromTo[0] = new Point(vegsoLepo.Xpozicio, vegsoLepo.Ypozicio);
-            fromTo[1] = vegsolepes;
-           // fromTo[0] = defaultlepes[0];
-            //fromTo[1] = defaultlepes[1];
+            Lepes vegso = ParhuzamosKereses(szint, tabla, aktualisjatekos);
+            fromTo[0] = new Point(vegso.fromx, vegso.fromy);
+            fromTo[1] = new Point(vegso.x,vegso.y);
             return fromTo;
         }
-    
+
 
         Babu IdeiglenesLeut(int x, int y, Jatekos feher)
         {
@@ -53,83 +53,106 @@ namespace PerProg
             return temp;
         }
 
-        int ParhuzamosKereses(int szint, int [,] tabla, bool ai)
+        Lepes ParhuzamosKereses(int szint, int[,] tabla, bool ai)
         {
-            int ertek = 0;
-            List<Task> workers = new List<Task>();
-            for (int i = 0; i < 4; i++)
-            {
-                Task t = new Task(() => SlaveKeres());
-                workers.Add(t);
-            }
 
-            Task.WaitAll(workers.ToArray());
-            return ertek;
+            Lepes vegso = new Lepes(-1, -1, null);
+            vegso = Kereses(szint, tabla, ai);
+            return vegso;
         }
-        int  Kereses(int szint, int[,] tabla, bool ai)
+        Lepes Kereses(int szint, int[,] tabla, bool ai)
         {
             if (szint == 0)
             {
-                return tablaKiertekel(tabla);
+                return new Lepes(tablaKiertekel(tabla));
             }
+            Lepes legjobbErtek = new Lepes(ai ? 9999 : -9999);
+            List<Point[]> lehetsegesLepesek = new List<Point[]>();
             if (ai)
             {
-                int legjobbErtek = 9999;
-                foreach (var item in this.Babuk)
+                foreach (var item in Babuk)
                 {
                     foreach (var lepes in item.LehetsegesLepesek(tabla))
                     {
-                        Babu temp = IdeiglenesLeut((int)lepes.X, (int)lepes.Y,ellenfel);
-                        Point honnan = IdeigLenesenMozgat(item, lepes, tabla);
-                        int ertek =  Kereses(szint - 1, tabla, !ai);
-                        ertek += szint;
-                        if (legjobbErtek> ertek)
-                        {
-                            lock (lockobject)
-                            {
-                                legjobbErtek = ertek;
-                                vegsolepes = lepes;
-                                vegsoLepo = item;
-                            }
-                        }
-                        visszaAllit(item, temp, honnan,tabla,ellenfel);
+                        Point[] temp = new Point[2] { new Point(item.Xpozicio, item.Ypozicio), lepes };
+                        lehetsegesLepesek.Add(temp);
                     }
                 }
-                return legjobbErtek;
             }
             else
             {
-                int legjobbErtek = -9999;
                 foreach (var item in ellenfel.Babuk)
                 {
                     foreach (var lepes in item.LehetsegesLepesek(tabla))
                     {
-                        Babu temp = IdeiglenesLeut((int)lepes.X, (int)lepes.Y, this);
-                        Point honnan = IdeigLenesenMozgat(item, lepes, tabla);
-                        int ertek = Kereses(szint - 1, tabla,!ai);
-                        if (legjobbErtek< ertek)
-                        {
-                            legjobbErtek = ertek;
-                        }
-                        visszaAllit(item, temp, honnan, tabla, this);
-
+                        Point[] temp = new Point[2] { new Point(item.Xpozicio, item.Ypozicio), lepes };
+                        lehetsegesLepesek.Add(temp);
                     }
                 }
-                return legjobbErtek;
             }
+            Queue<Task> workers = new Queue<Task>();
+
+            foreach (var item in lehetsegesLepesek)
+            {
+                Lepes jelenlegi = new Lepes((int)item[1].X, (int)item[1].Y, (int)item[0].X, (int)item[0].Y);
+                if (taskSzam < maxTask && szint > 0)
+                {
+                    Interlocked.Increment(ref taskSzam);
+                    workers.Enqueue(Task.Factory.StartNew(() =>
+                    {
+                        jelenlegi = Kereses(szint - 1, UjAllapot(jelenlegi, tabla, ai), !ai);
+                        lock (lockobject)
+                        {
+                            if (ai)
+                            {
+                                if (jelenlegi.ertek < legjobbErtek.ertek)
+                                {
+                                    legjobbErtek = jelenlegi;
+                                }
+                            }
+                            else
+                            {
+                                if (jelenlegi.ertek > legjobbErtek.ertek)
+                                {
+                                    legjobbErtek = jelenlegi;
+                                }
+                            }
+                        }
+                    }
+                    ));
+                }
+                else
+                {
+                    jelenlegi = Kereses(szint - 1, UjAllapot(jelenlegi, tabla, ai), !ai);
+                    lock (lockobject)
+                    {
+                        if (ai)
+                        {
+                            if (jelenlegi.ertek < legjobbErtek.ertek)
+                            {
+                                legjobbErtek = jelenlegi;
+                            }
+                        }
+                        else
+                        {
+                            if (jelenlegi.ertek > legjobbErtek.ertek)
+                            {
+                                legjobbErtek = jelenlegi;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Task.WaitAll(workers.ToArray());
+            return legjobbErtek;
+
 
         }
 
-        void SlaveKeres()
+        private int[,] UjAllapot(Lepes jelenlegi, int[,] tabla, bool ai)
         {
-            int [,] ertek;
-            while (!keresesVege)
-            {
-                if (tablestates.TryTake(out ertek))
-                {
-                    Kereses(szint, ertek, false);
-                }
-            }
+            throw new NotImplementedException();
         }
 
         private int tablaKiertekel(int[,] tabla)
@@ -141,7 +164,7 @@ namespace PerProg
             {
                 for (int j = 0; j < tabla.GetLength(1); j++)
                 {
-                    if (tabla[i,j] > 0)
+                    if (tabla[i, j] > 0)
                     {
                         ellenfelbabuk += tabla[i, j];
                     }
@@ -154,7 +177,7 @@ namespace PerProg
             ertek += Math.Abs(aibabuk) - ellenfelbabuk;
             for (int i = 0; i < tabla.GetLength(0); i++)
             {
-                if (tabla[1,i] != -10)
+                if (tabla[1, i] != -10)
                 {
                     ertek -= 10;
                 }
@@ -162,7 +185,7 @@ namespace PerProg
             return ertek;
         }
 
-        Point IdeigLenesenMozgat(Babu babu,Point to,int [,] tabla)
+        Point IdeigLenesenMozgat(Babu babu, Point to, int[,] tabla)
         {
             Point honnan = new Point(babu.Xpozicio, babu.Ypozicio);
             tabla[babu.Xpozicio, babu.Ypozicio] = 0;
@@ -171,7 +194,7 @@ namespace PerProg
             tabla[babu.Xpozicio, babu.Ypozicio] = (int)babu.tipus * (int)babu.Szin;
             return honnan;
         }
-        void visszaAllit(Babu visszamozgat, Babu leutott,Point hova,int[,] tabla,Jatekos jatekos)
+        void visszaAllit(Babu visszamozgat, Babu leutott, Point hova, int[,] tabla, Jatekos jatekos)
         {
             int tempx = visszamozgat.Xpozicio;
             int tempy = visszamozgat.Ypozicio;
@@ -187,8 +210,42 @@ namespace PerProg
             {
                 tabla[tempx, tempy] = 0;
             }
-           
+
         }
 
+    }
+
+
+    public class Lepes
+    {
+        public int x, y;
+        public int fromx, fromy;
+        public int? ertek;
+
+        public Lepes(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+            ertek = null;
+        }
+        public Lepes(int x, int y,int fromx,int fromy)
+        {
+            this.x = x;
+            this.y = y;
+            this.fromx = fromx;
+            this.fromy = fromy;
+            ertek = null;
+        }
+        public Lepes(int? ertek)
+        {
+            x = y = -1;
+            this.ertek = ertek;
+        }
+        public Lepes(int x, int y, int? ertek)
+        {
+            this.x = x;
+            this.y = y;
+            this.ertek = ertek;
+        }
     }
 }
