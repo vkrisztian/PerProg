@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace PerProg
         bool keresesVege = false;
         object lockobject = new object();
         int szint;
-        int maxTask = 3;
+        int maxTask = 4;
         int taskSzam = 0;
         public ParhuzamosJatekos(string name, Szin szin, Jatekos ellenfel) : base(name, szin)
         {
@@ -57,10 +58,13 @@ namespace PerProg
         {
 
             Lepes vegso = new Lepes(-1, -1, null);
-            vegso = Kereses(szint, tabla, ai);
+            List<ObservableCollection<Babu>> babuk = new List<ObservableCollection<Babu>>();
+            babuk.Add(this.Babuk);
+            babuk.Add(ellenfel.Babuk);
+            vegso = Kereses(szint, tabla, ai,babuk);
             return vegso;
         }
-        Lepes Kereses(int szint, int[,] tabla, bool ai)
+        Lepes Kereses(int szint, int[,] tabla, bool ai,List<ObservableCollection<Babu>>babuk)
         {
             if (szint == 0)
             {
@@ -70,7 +74,7 @@ namespace PerProg
             List<Point[]> lehetsegesLepesek = new List<Point[]>();
             if (ai)
             {
-                foreach (var item in Babuk)
+                foreach (var item in babuk[0])
                 {
                     foreach (var lepes in item.LehetsegesLepesek(tabla))
                     {
@@ -81,7 +85,7 @@ namespace PerProg
             }
             else
             {
-                foreach (var item in ellenfel.Babuk)
+                foreach (var item in babuk[1])
                 {
                     foreach (var lepes in item.LehetsegesLepesek(tabla))
                     {
@@ -100,7 +104,7 @@ namespace PerProg
                     Interlocked.Increment(ref taskSzam);
                     workers.Enqueue(Task.Factory.StartNew(() =>
                     {
-                        jelenlegi = Kereses(szint - 1, UjAllapot(jelenlegi, tabla, ai), !ai);
+                        jelenlegi.ertek = Kereses(szint - 1, UjAllapot(jelenlegi, tabla), !ai,ujBabuk(babuk,jelenlegi,ai)).ertek;
                         lock (lockobject)
                         {
                             if (ai)
@@ -123,7 +127,7 @@ namespace PerProg
                 }
                 else
                 {
-                    jelenlegi = Kereses(szint - 1, UjAllapot(jelenlegi, tabla, ai), !ai);
+                    jelenlegi = Kereses(szint - 1, UjAllapot(jelenlegi, tabla), !ai, ujBabuk(babuk, jelenlegi,ai));
                     lock (lockobject)
                     {
                         if (ai)
@@ -145,14 +149,68 @@ namespace PerProg
             }
 
             Task.WaitAll(workers.ToArray());
+            if (legjobbErtek.x == -1)
+            {
+                legjobbErtek = new Lepes((int)lehetsegesLepesek.First()[1].X, (int)lehetsegesLepesek.First()[1].Y, (int)lehetsegesLepesek.First()[0].X, (int)lehetsegesLepesek.First()[0].Y);
+            }
             return legjobbErtek;
 
 
         }
 
-        private int[,] UjAllapot(Lepes jelenlegi, int[,] tabla, bool ai)
+        private List<ObservableCollection<Babu>> ujBabuk(List<ObservableCollection<Babu>> babuk, Lepes jelenlegi,bool ai)
         {
-            throw new NotImplementedException();
+            ObservableCollection<Babu> temp = new ObservableCollection<Babu>(babuk[0]);
+            ObservableCollection<Babu> temp2 = new ObservableCollection<Babu>(babuk[1]);
+           
+            if (ai)
+            {
+                for (int i = 0; i < temp.Count; i++)
+                {
+                    if (temp[i].Xpozicio == jelenlegi.fromx && temp[i].Ypozicio == jelenlegi.fromy)
+                    {
+                        temp[i].Xpozicio = jelenlegi.fromx;
+                        temp[i].Ypozicio = jelenlegi.fromy;
+                    }
+                }
+                for (int i = 0; i < temp2.Count; i++)
+                {
+                    if (temp2[i].Xpozicio == jelenlegi.x && temp2[i].Ypozicio == jelenlegi.y)
+                    {
+                        temp2[i].aktiv = false;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < temp2.Count; i++)
+                {
+                    if (temp2[i].Xpozicio == jelenlegi.fromx && temp2[i].Ypozicio == jelenlegi.fromy)
+                    {
+                        temp2[i].Xpozicio = jelenlegi.fromx;
+                        temp2[i].Ypozicio = jelenlegi.fromy;
+                    }
+                }
+                for (int i = 0; i < temp.Count; i++)
+                {
+                    if (temp[i].Xpozicio == jelenlegi.x && temp[i].Ypozicio == jelenlegi.y)
+                    {
+                        temp2[i].aktiv = false;
+                    }
+                }
+            }
+            List<ObservableCollection<Babu>> ujbabuk = new List<ObservableCollection<Babu>>();
+            ujbabuk.Add(temp);
+            ujbabuk.Add(temp2);
+            return ujbabuk;
+        }
+
+        private int[,] UjAllapot(Lepes jelenlegi, int[,] tabla)
+        {
+            int[,] temp = Util.CreateTemp(tabla);
+            temp[jelenlegi.x, jelenlegi.y] = temp[jelenlegi.fromx, jelenlegi.fromy];
+            temp[jelenlegi.fromx, jelenlegi.fromy] = 0;
+            return temp;
         }
 
         private int tablaKiertekel(int[,] tabla)
@@ -182,7 +240,7 @@ namespace PerProg
                     ertek -= 10;
                 }
             }
-            return ertek;
+            return -ertek;
         }
 
         Point IdeigLenesenMozgat(Babu babu, Point to, int[,] tabla)
