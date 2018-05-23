@@ -127,7 +127,7 @@ namespace PerProg
                 }
                 else
                 {
-                    jelenlegi = Kereses(szint - 1, UjAllapot(jelenlegi, tabla), !ai, ujBabuk(babuk, jelenlegi,ai));
+                    jelenlegi.ertek = Kereses(szint - 1, UjAllapot(jelenlegi, tabla), !ai, ujBabuk(babuk, jelenlegi,ai)).ertek;
                     lock (lockobject)
                     {
                         if (ai)
@@ -240,7 +240,7 @@ namespace PerProg
                     ertek -= 10;
                 }
             }
-            return -ertek;
+            return ertek;
         }
 
         Point IdeigLenesenMozgat(Babu babu, Point to, int[,] tabla)
