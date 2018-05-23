@@ -125,7 +125,6 @@ namespace PerProg
                         Interlocked.Decrement(ref taskSzam);
                     }
                     ));
-
                 }
                 else
                 {
