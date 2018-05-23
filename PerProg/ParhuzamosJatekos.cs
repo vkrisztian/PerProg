@@ -99,7 +99,7 @@ namespace PerProg
             foreach (var item in lehetsegesLepesek)
             {
                 Lepes jelenlegi = new Lepes((int)item[1].X, (int)item[1].Y, (int)item[0].X, (int)item[0].Y);
-                if (taskSzam < maxTask && szint > 0)
+                if (taskSzam < maxTask && szint > 1)
                 {
                     Interlocked.Increment(ref taskSzam);
                     workers.Enqueue(Task.Factory.StartNew(() =>
@@ -124,6 +124,7 @@ namespace PerProg
                         }
                     }
                     ));
+                    Interlocked.Decrement(ref taskSzam);
                 }
                 else
                 {
