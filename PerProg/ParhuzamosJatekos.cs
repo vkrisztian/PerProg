@@ -53,19 +53,6 @@ namespace PerProg
             return temp;
         }
 
-        int ParhuzamosKereses(int szint, int [,] tabla, bool ai)
-        {
-            int ertek = 0;
-            List<Task> workers = new List<Task>();
-            for (int i = 0; i < 4; i++)
-            {
-                Task t = new Task(() => SlaveKeres());
-                workers.Add(t);
-            }
-
-            Task.WaitAll(workers.ToArray());
-            return ertek;
-        }
         int  Kereses(int szint, int[,] tabla, bool ai)
         {
             if (szint == 0)
@@ -118,17 +105,6 @@ namespace PerProg
 
         }
 
-        void SlaveKeres()
-        {
-            int [,] ertek;
-            while (!keresesVege)
-            {
-                if (tablestates.TryTake(out ertek))
-                {
-                    Kereses(szint, ertek, false);
-                }
-            }
-        }
 
         private int tablaKiertekel(int[,] tabla)
         {
