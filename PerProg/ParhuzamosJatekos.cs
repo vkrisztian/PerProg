@@ -122,9 +122,10 @@ namespace PerProg
                                 }
                             }
                         }
+                        Interlocked.Decrement(ref taskSzam);
                     }
                     ));
-                    Interlocked.Decrement(ref taskSzam);
+
                 }
                 else
                 {
